@@ -4,7 +4,7 @@
 
 {
     'name': "SMTP Per User",
-    'version': '0.1.0',
+    'version': '0.2.0',
     'summary': 'Send letters from Odoo using your own mail',
     'category': 'Mail',
     'description': """Can configure different mail servers per user""",
@@ -13,8 +13,7 @@
     'website': "https://github.com/oerp-odoo",
     "depends": ['mail'],
     'data': [
-        'security/ir.model.access.csv',
-        'views/smtp_per_user_view.xml',
+        'views/ir_mail_server_views.xml',
     ],
     "installable": True
 }

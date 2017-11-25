@@ -32,15 +32,19 @@ class MailMail(models.Model):
 
     @api.multi
     def send(self, auto_commit=False, raise_exception=False):
-        ir_mail_server_obj = self.env['ir.mail_server']
-        res_user_obj = self.env['res.users']
+        """Extend to send using Mail server by user.
+
+        Will use such mail server only if there is one with user
+        specified.
+        """
+        IrMailServer = self.env['ir.mail_server']
         for mail in self:
             if not mail.mail_server_id.force_use:
-                user = res_user_obj.search(
-                    [('partner_id', '=', mail.author_id.id)], limit=1)
-                if user:
-                    mail_server = ir_mail_server_obj.search(
-                        [('user_id', '=', user.id)], limit=1)
+                user_ids = mail.author_id.user_ids
+                if user_ids:
+                    user_id = user_ids[0].id
+                    mail_server = IrMailServer.search(
+                        [('user_id', '=', user_id)], limit=1)
                     if mail_server:
                         mail.mail_server_id = mail_server.id
             mail.email_from = mail.mail_server_id.replace_email_name(
